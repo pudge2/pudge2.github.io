@@ -55,13 +55,14 @@ function handlePlotClick(index) {
             garden[index] = states.READY;
             updateGarden();
         }, 8000);
-    } else if (garden[index] === states.READY) {
+ } else if (garden[index] === states.READY) {
         garden[index] = states.EMPTY;
+        harvestCount++;  // Добавляем урожай
+        waterCount += 1.5;  // Теперь за сбор дается 1.5 воды
         seedCount += 2;
-        harvestCount++;
-        waterCount += 1.5;
-        harvestCounter.textContent = `x${harvestCount}`;
+        seedCounter.textContent = `x${seedCount}`;
         waterCounter.textContent = `x${Math.floor(waterCount)}`;
+        harvestCounter.textContent = `Урожай: x${harvestCount}`;
     }
     updateGarden();
 }
