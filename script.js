@@ -1,7 +1,16 @@
 let seedCount = 5;
+let waterCount = 3;
+let harvestCount = 0;
+let selectedItem = null;
+
 const plots = document.getElementById("plots");
 const seedCounter = document.getElementById("seedCount");
+const waterCounter = document.getElementById("waterCount");
+const harvestCounter = document.getElementById("harvestCount");
+const toggleInventoryButton = document.getElementById("toggleInventory");
+const closeInventoryButton = document.getElementById("closeInventory");
 const inventory = document.getElementById("inventory");
+const selectedItemText = document.getElementById("selectedItem");
 
 const states = {
     EMPTY: "empty.png",
@@ -10,77 +19,69 @@ const states = {
     READY: "ready.png"
 };
 
-let garden = Array(9).fill({ state: states.EMPTY, timer: 0 });
+let garden = Array(9).fill(states.EMPTY);
+let growthTimers = Array(9).fill(null);
 
 function updateGarden() {
     plots.innerHTML = "";
-    garden.forEach((plotData, index) => {
+    garden.forEach((state, index) => {
         const plot = document.createElement("div");
         plot.classList.add("plot");
-        plot.style.backgroundImage = `url(${plotData.state})`;
-        plot.onclick = () => handlePlotClick(index);
+        plot.style.backgroundImage = `url(${states.EMPTY})`;
 
-        if (plotData.state === states.GROWING) {
-            plot.onmouseover = () => showTimer(plot, plotData.timer);
-            plot.onmouseleave = () => hideTimer(plot);
+        if (state !== states.EMPTY) {
+            const plant = document.createElement("div");
+            plant.classList.add("plant");
+            plant.style.backgroundImage = `url(${state})`;
+            plot.appendChild(plant);
         }
 
+        plot.onclick = () => handlePlotClick(index);
         plots.appendChild(plot);
     });
 }
 
-function showTimer(plot, timeLeft) {
-    const timerElement = document.createElement("div");
-    timerElement.classList.add("timer");
-    timerElement.textContent = `${timeLeft}s`;
-    plot.appendChild(timerElement);
-}
-
-function hideTimer(plot) {
-    const timerElement = plot.querySelector(".timer");
-    if (timerElement) {
-        plot.removeChild(timerElement);
-    }
-}
-
 function handlePlotClick(index) {
-    if (garden[index].state === states.EMPTY && seedCount > 0) {
-        garden[index] = { state: states.SEED, timer: 0 };
+    if (selectedItem === "seed" && garden[index] === states.EMPTY && seedCount > 0) {
+        garden[index] = states.SEED;
         seedCount--;
-    } else if (garden[index].state === states.READY) {
-        garden[index] = { state: states.EMPTY, timer: 0 };
-        seedCount += 2; // Урожай дает +2 семени
+        seedCounter.textContent = `x${seedCount}`;
+    } else if (selectedItem === "water" && garden[index] === states.SEED && waterCount > 0) {
+        garden[index] = states.GROWING;
+        waterCount--;
+        waterCounter.textContent = `x${waterCount}`;
+
+        setTimeout(() => {
+            garden[index] = states.READY;
+            updateGarden();
+        }, 8000);
+    } else if (garden[index] === states.READY) {
+        garden[index] = states.EMPTY;
+        harvestCount++;
+        waterCount += 1.5;
+        harvestCounter.textContent = `x${harvestCount}`;
+        waterCounter.textContent = `x${Math.floor(waterCount)}`;
     }
     updateGarden();
-    updateInventory();
 }
 
-document.getElementById("waterButton").addEventListener("click", () => {
-    garden.forEach((plot, index) => {
-        if (plot.state === states.SEED) {
-            garden[index] = { state: states.GROWING, timer: 20 };
-            startGrowth(index);
-        }
-    });
-    updateGarden();
+toggleInventoryButton.addEventListener("click", () => {
+    inventory.style.display = inventory.style.display === "none" ? "block" : "none";
 });
 
-function startGrowth(index) {
-    let interval = setInterval(() => {
-        if (garden[index].timer > 0) {
-            garden[index].timer--;
-            updateGarden();
-        } else {
-            garden[index].state = states.READY;
-            clearInterval(interval);
-            updateGarden();
-        }
-    }, 1000);
+closeInventoryButton.addEventListener("click", () => {
+    inventory.style.display = "none";
+});
+
+function selectItem(item) {
+    selectedItem = item;
+    selectedItemText.textContent = item === "seed" ? "Семена" : item === "water" ? "Вода" : "Урожай";
+
+    document.querySelectorAll(".inventory-item").forEach(el => el.classList.remove("selected"));
+    document.querySelector(`[data-item="${item}"]`).classList.add("selected");
 }
 
-function updateInventory() {
-    seedCounter.textContent = `x${seedCount}`;
-}
+document.getElementById("seedItem").addEventListener("click", () => selectItem("seed"));
+document.getElementById("waterItem").addEventListener("click", () => selectItem("water"));
 
 updateGarden();
-updateInventory();
