@@ -57,6 +57,7 @@ function handlePlotClick(index) {
         }, 8000);
     } else if (garden[index] === states.READY) {
         garden[index] = states.EMPTY;
+        seedCount += 2;
         harvestCount++;
         waterCount += 1.5;
         harvestCounter.textContent = `x${harvestCount}`;
