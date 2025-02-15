@@ -12,15 +12,27 @@
             <span id="ton">0 TON</span>
             <span id="kal">20 KAL</span>
         </div>
+
         <div class="garden">
             <div id="plots"></div>
         </div>
-        <div class="inventory">
-            <img src="seed.png" class="seed-icon">
-            <span id="seedCount">x5</span>
+
+        <button id="toggleInventory">Открыть инвентарь</button>
+
+        <div id="inventory" class="inventory">
+            <button id="closeInventory">✖</button>
+            <p>Выбранный предмет: <span id="selectedItem">ничего</span></p>
+            <p id="seedItem" class="inventory-item" data-item="seed">
+                <img src="seed.png" class="seed-icon"> Семена: <span id="seedCount">x5</span>
+            </p>
+            <p id="waterItem" class="inventory-item" data-item="water">
+                <img src="water.png" class="water-icon"> Вода: <span id="waterCount">x3</span>
+            </p>
+            <p id="harvestItem" class="inventory-item" data-item="ready">
+                <img src="ready.png" class="harvest-icon"> Урожай: <span id="harvestCount">x0</span>
+            </p>
         </div>
-        <button id="waterButton">Полить</button>
-    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
