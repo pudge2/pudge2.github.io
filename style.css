@@ -41,17 +41,16 @@ html, body {
 
 #plots {
     display: grid;
-    grid-template-columns: repeat(3, minmax(50px, 15vw));
-    gap: 5px;
+    grid-template-columns: repeat(3, minmax(80px, 30vw)); /* Делаем грядки больше */
+    gap: 3vw; /* Добавляем отступы */
+    justify-content: center;
 }
 
 .plot {
-    width: 15vw;
-    height: 15vw;
+    width: min(30vw, 120px); /* Увеличиваем размер грядок */
+    height: min(30vw, 120px);
     background: url('empty.png') no-repeat center;
-    background-size: cover;
-    cursor: pointer;
-    position: relative;
+    background-size: contain;
 }
 
 .plant {
