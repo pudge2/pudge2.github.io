@@ -27,7 +27,6 @@ function updateGarden() {
     garden.forEach((state, index) => {
         const plot = document.createElement("div");
         plot.classList.add("plot");
-        plot.style.backgroundImage = `url(${states.EMPTY})`;
 
         if (state !== states.EMPTY) {
             const plant = document.createElement("div");
@@ -46,6 +45,7 @@ function handlePlotClick(index) {
         garden[index] = states.SEED;
         seedCount--;
         seedCounter.textContent = `x${seedCount}`;
+        updateGarden();
     } else if (selectedItem === "water" && garden[index] === states.SEED && waterCount > 0) {
         garden[index] = states.GROWING;
         waterCount--;
@@ -55,16 +55,16 @@ function handlePlotClick(index) {
             garden[index] = states.READY;
             updateGarden();
         }, 8000);
- } else if (garden[index] === states.READY) {
+    } else if (garden[index] === states.READY) {
         garden[index] = states.EMPTY;
-        harvestCount++;  // Добавляем урожай
-        waterCount += 1.5;  // Теперь за сбор дается 1.5 воды
+        harvestCount++;
+        waterCount += 1.5;
         seedCount += 2;
         seedCounter.textContent = `x${seedCount}`;
         waterCounter.textContent = `x${Math.floor(waterCount)}`;
         harvestCounter.textContent = `Урожай: x${harvestCount}`;
+        updateGarden();
     }
-    updateGarden();
 }
 
 toggleInventoryButton.addEventListener("click", () => {
